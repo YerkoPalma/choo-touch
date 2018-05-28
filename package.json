@@ -1,0 +1,27 @@
+{
+  "name": "choo-touch",
+  "version": "0.1.0",
+  "description": "hammerjs wrapper for choo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "budo example.js -H 0.0.0.0 -p 8080"
+  },
+  "repository": "YerkoPalma/choo-touch",
+  "keywords": [
+    "choo",
+    "mobile"
+    "hammerjs",
+    "touch"
+  ],
+  "author": "Yerko Palma",
+  "license": "MIT",
+  "dependencies": {
+    "hammerjs": "^2.0.8"
+  },
+  "devDependencies": {
+    "budo": "^11.2.2",
+    "choo": "^6.11.0",
+    "choo-devtools": "^2.5.1"
+  }
+}
