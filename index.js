@@ -4,7 +4,33 @@ module.exports = touch
 
 function touch (selector, handlers) {
   var gestures = ['tap', 'pan', 'pinch', 'press', 'rotate', 'swipe', 'doubletap']
-  var directions = ['up', 'down', 'left', 'right', 'horizontal', 'vertical', 'all']
+  // options per gesture
+  var options = {
+    tap: {
+      time: 200,
+      interval: 350,
+      threshold: 5
+    },
+    pan: {
+      threshold: 0
+    },
+    pinch: {
+      threshold: 0
+    },
+    press: {
+      threshold: 9,
+      time: 400
+    },
+    rotate: {
+      threshold: 0
+    },
+    swipe: {
+      threshold: 10
+    },
+    doubletap: {
+      threshold: 0
+    }
+  }
 
   return function (state, emitter, app) {
     emitter.on(state.events.DOMCONTENTLOADED, () => {
@@ -13,42 +39,34 @@ function touch (selector, handlers) {
         Array.prototype.forEach.call(elements, element => {
           var mc = new Hammer.Manager(element)
           // get element gestures
-          var _gestures = []
-          var _directions = {}
-          for (var gesture in element.dataset) {
-            var _gesture = gesture.split('.')
-            if (gestures.indexOf(_gesture[0]) > -1) {
-              _gestures.push(_gesture[0])
-            }
-            if (_gesture.length > 1) {
-              _directions[_gesture[0]] = _gesture[1]
-            }
-          }
+          var recognizers = element.dataset.recognize.split(' ').filter(gesture => gestures.indexOf(gesture) > -1)
+          delete element.dataset.recognize
+
           // get Hammer recognizer
-          _gestures.forEach(gesture => {
+          recognizers.forEach(gesture => {
             // create recognizer if not ready
             if (!mc.get(gesture)) {
-              var recognizer = new Hammer[capitalize(gesture)]()
+              var recognizer = new Hammer[capitalize(gesture)](options[gesture])
               recognizer.recognizeWith(mc.recognizers)
               mc.add(recognizer)
             }
-            // set directions
-            if (_directions[gesture]) {
-              var hammerDirection = 'DIRECTION_' + _directions[gesture].toUpperCase()
-              if (directions.indexOf(_directions[gesture]) && Hammer.hasOwnProperty(hammerDirection)) {
-                recognizer.set({ direction: Hammer[hammerDirection] })
-              }
-            }
+          })
+          // set events
+          for (var event in element.dataset) {
             // set handlers
-            if (handlers[element.dataset[gesture]]) {
-              mc.on(gesture, e => {
-                handlers[element.dataset[gesture]](e)
+            if (handlers[element.dataset[event]]) {
+              mc.on(event, e => {
+                handlers[element.dataset[event]](e)
               })
             } else {
-              mc.on(gesture, e => {
-                emitter.emit(element.dataset[gesture], e)
+              mc.on(event, e => {
+                emitter.emit(element.dataset[e.type], e)
               })
             }
+          }
+          // for login
+          mc.on('hammer.input', e => {
+            emitter.emit('log:debug', JSON.stringify(e))
           })
         })
       }

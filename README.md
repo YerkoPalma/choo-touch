@@ -15,7 +15,7 @@ function mainView (state, emit) {
   return html`
     <body>
       <h1>count is ${state.count}</h1>
-      <button data-tap="fn">Increment</button>
+      <button data-recognize="tap pan" data-tap="fn" data-panstart.panmove="fn2">Increment</button>
     </body>
   `
 }
