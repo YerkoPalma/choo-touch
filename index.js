@@ -3,6 +3,7 @@ const Hammer = require('hammerjs')
 module.exports = touch
 
 function touch (selector, handlers) {
+  handlers = handlers || {}
   var gestures = ['tap', 'pan', 'pinch', 'press', 'rotate', 'swipe', 'doubletap']
   // options per gesture
   var options = {
@@ -54,7 +55,7 @@ function touch (selector, handlers) {
           // set events
           for (var event in element.dataset) {
             // set handlers
-            if (handlers[element.dataset[event]]) {
+            if (handlers[element.dataset[event]] && typeof handlers[element.dataset[event]] === 'function') {
               mc.on(event, e => {
                 handlers[element.dataset[event]](e)
               })
@@ -64,7 +65,7 @@ function touch (selector, handlers) {
               })
             }
           }
-          // for login
+          // for loggin
           mc.on('hammer.input', e => {
             emitter.emit('log:debug', JSON.stringify(e))
           })
