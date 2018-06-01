@@ -1,6 +1,6 @@
 {
   "name": "choo-touch",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "hammerjs wrapper for choo",
   "main": "index.js",
   "scripts": {
