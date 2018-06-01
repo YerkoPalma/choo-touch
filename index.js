@@ -55,15 +55,13 @@ function touch (selector, handlers) {
           // set events
           for (var event in element.dataset) {
             // set handlers
-            if (handlers[element.dataset[event]] && typeof handlers[element.dataset[event]] === 'function') {
-              mc.on(event, e => {
-                handlers[element.dataset[event]](e)
-              })
-            } else {
-              mc.on(event, e => {
+            mc.on(event, e => {
+              if (handlers[element.dataset[e.type]] && typeof handlers[element.dataset[e.type]] === 'function') {
+                handlers[element.dataset[e.type]](e)
+              } else {
                 emitter.emit(element.dataset[e.type], e)
-              })
-            }
+              }
+            })
           }
           // for loggin
           mc.on('hammer.input', e => {
